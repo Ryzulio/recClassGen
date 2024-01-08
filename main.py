@@ -103,8 +103,6 @@ def attr_gen_calc():
         else:
             y="K"
             
-            
-            
         if(players_created == players_to_create):
             print("Player Created")
             break
@@ -114,6 +112,36 @@ def attr_gen_calc():
     pos_and_attr = (x,y,players_created)
     return pos_and_attr
 
+def priority_avatar_gen():
+    priority = {
+        "playingTime": random.randint(0,10),
+        "proximityToHome": random.randint(0,10),
+        "prestige": random.randint(0,10),
+        "stadiumAtmosphere": random.randint(0,10),
+        "facilities": random.randint(0,10),
+        "collegeLife": random.randint(0,10),
+        "academics": random.randint(0,10),
+        "nil": random.randint(0,10)
+    }
+    skinColor_list = ["Pale", "Light", "Tanned", "Brown", "Dark brown", "Black"]
+    hairColor_list = ["Black", "Dark brown", "Brown", "Auburn", "Blonde", "Golden blonde", "Platinum", "Red", "Grey"]
+    hair_list = ["Bald", "Balding", "Buzz cut", "Buzz cut indent", "Short flat", "Short round", "Short curly", "Short wavy", "Frizzle", "Mullet", "Short dreads", "Long dreads", "Very long dreads", "Afro", "Big and wavy", "Bob #1", "Bob #2", "Bun", "Curly", "Wavy", "Shoulder length", "Long #1", "Long #2", "Long #3"]
+    facialHair_list = ["None", "Light beard", "Medium beard", "Majestic beard", "Moustache", "Fancy moustache"]
+    eye_list = ["default", "Happy", "Side", "Wide-eyed"]
+    eyebrow_list = ["Defaul", "Default (natural)", "Angry", "Angry (natural)", "Excited", "Excited (natral)", "Bushy", "Unibrow"]
+    mouth_list = ["Happy", "Serious", "Smile", "Twinkle"]
+    avatar = {
+        "skinColor": random.choice(skinColor_list),
+        "hairColor": random.choice(hairColor_list),
+        "hair": random.choice(hair_list),
+        "facialHair": random.choice(facialHair_list),
+        "eye": random.choice(eye_list),
+        "eyebrow": random.choice(eyebrow_list),
+        "mouth": random.choice(mouth_list)
+    }
+    
+    data = (avatar, priority)
+    return data
 types = ["HS", "JUCO"]
 archtypes = ["a", "b"]
 avatars = ["a", "b"]
@@ -122,22 +150,23 @@ priorities = ["a", "b"]
 data_list = []
 # JSON File Writing
 for i in range(players_to_create):
-        positionAttributes = attr_gen_calc()
-        rating_gen = round(random.uniform(.5,1), 4)
-        zip_code = ''.join(str(random.randint(0, 9)) for _ in range(5))
-        json_data = {
-            "rating": rating_gen,
-            "type": random.choice(types),
-            "position": positionAttributes[1],
-            "firstName": names.get_first_name(gender="male"), 
-            "lastName": names.get_last_name(),
-            "homeZipcode": zip_code,
-            "archtype": random.choice(archtypes),
-            "avatar": random.choice(avatars),
-            "attributes": positionAttributes[0],
-            "priority": random.choice(priorities)
-        }
-        data_list.append(json_data)
+    avatar_priority = priority_avatar_gen()
+    positionAttributes = attr_gen_calc()
+    rating_gen = round(random.uniform(.5,1), 4)
+    zip_code = ''.join(str(random.randint(0, 9)) for _ in range(5))
+    json_data = {
+        "rating": rating_gen,
+        "type": random.choice(types),
+        "position": positionAttributes[1],
+        "firstName": names.get_first_name(gender="male"), 
+        "lastName": names.get_last_name(),
+        "homeZipcode": zip_code,
+        "archtype": random.choice(archtypes),
+        "avatar": avatar_priority[0],
+        "attributes": positionAttributes[0],
+        "priority": avatar_priority[1]
+    }
+    data_list.append(json_data)
         
 print(str(positionAttributes[2]) + " Players Succesfully Created")
         # print(f"{i} {positionAttributes[1]}")
