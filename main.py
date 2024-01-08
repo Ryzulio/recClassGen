@@ -3,8 +3,6 @@ import os
 import json
 import random
 import names
-import asyncio
-
 
 # rec_year = input("Recruiting Class Year: ")
 # players_to_create = input("Player Amount: ")
@@ -42,9 +40,9 @@ def attr_gen_calc(attr):
             }
     QB_Calc = ((3.25*(x["armStrength"] + x["accuracy"] + x["passIq"])) + 1.25*(x["speed"] + x["evasion"] + x["ballCarrierVision"]))/6
     RB_Calc = (4.25*(x["speed"] + x["evasion"] + x["strength"]) + (x["routeRunning"] + x["ballSecurity"] + x["catching"] +  x["ballCarrierVision"]) + (x["passBlocking"]+x["runBlocking"]))/8
-    WR_Calc = (3*(x["routeRunning"] + x["catching"])+2*(x["evasion"] + x["ballCarrierVision"] +x["speed"]))/5
+    WR_Calc = (3*(x["routeRunning"] + x["catching"]) + 2*(x["evasion"] + x["ballCarrierVision"] + x["speed"]))/5
     TE_Calc = (2.75*(x["passBlocking"] + x["runBlocking"] + x["routeRunning"]) + 1.5*(x["strength"] + x["speed"]))/5
-    OL_Calc = (2*(x["passBlocking"]+ x["runBlocking"] + 1.25*(x["strength"])))/3
+    OL_Calc = (2*(x["passBlocking"]+ x["runBlocking"]) + 1.25*(x["strength"]))/3
 
 # QB
     if(QB_Calc >= RB_Calc and QB_Calc >= WR_Calc and QB_Calc >= TE_Calc and QB_Calc >= OL_Calc):
@@ -53,10 +51,10 @@ def attr_gen_calc(attr):
         print(QB_Calc +" " + y)
 
 # WR
-    elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc):
+    elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc and WR_Calc > QB_Calc):
         y = "WR"
-        x.update({"speed":90})
-        print(x["speed"])
+        if y  == "WR":
+             x.update({"speed":90})
         WR_Calc = str(WR_Calc)
         print(WR_Calc + " " + y) 
 # RB
@@ -83,6 +81,9 @@ def attr_gen_calc(attr):
         y="OL"
         OL_Calc = str(OL_Calc)
         print(OL_Calc + " " + y)
+        
+        if y  == "WR":
+            x.update({"speed":90})
     
     if(attr==1):
         return x 
