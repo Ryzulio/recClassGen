@@ -9,6 +9,7 @@ import names
 output_file_name = "results.json"
 output_file_path = os.path.join(os.path.dirname(__file__), output_file_name)
 def attr_gen_calc(attr):
+# Initial Randomization
     x = {
                 "year": 2022, 
                 "durability": round(random.uniform(40,120),0),
@@ -38,6 +39,7 @@ def attr_gen_calc(attr):
                 "puntPower": round(random.uniform(40,100),0 ),
                 "puntAccuracy": round(random.uniform(40,100),0 )
             }
+# Positon Calculations
     QB_Calc = ((3.25*(x["armStrength"] + x["accuracy"] + x["passIq"])) + 1.25*(x["speed"] + x["evasion"] + x["ballCarrierVision"]))/6
     RB_Calc = (4.25*(x["speed"] + x["evasion"] + x["strength"]) + (x["routeRunning"] + x["ballSecurity"] + x["catching"] +  x["ballCarrierVision"]) + (x["passBlocking"]+x["runBlocking"]))/8
     WR_Calc = (3*(x["routeRunning"] + x["catching"]) + 2*(x["evasion"] + x["ballCarrierVision"] + x["speed"]))/5
@@ -98,7 +100,6 @@ avatars = ["a", "b"]
 priorities = ["a", "b"]
 
 data_list = []
-attr_gen_calc(attr=0)
 for i in range(25):
         rating_gen = round(random.uniform(.5,1), 4)
         zip_code = ''.join(str(random.randint(0, 9)) for _ in range(5))
