@@ -7,6 +7,7 @@ import time
 from collections import Counter
 
 # rec_year = input("Recruiting Class Year: ")
+print("Recommended Amount: 3000-3600")
 players_to_create = int(input("Player Amount: "))
 output_file_name = "results.json"
 output_file_path = os.path.join(os.path.dirname(__file__), output_file_name)
@@ -46,32 +47,30 @@ def attr_gen_calc():
         
 # Positon Calculations
         QB_Calc = ((2.75*(x["armStrength"] + x["accuracy"] + x["passIq"])) + (x["speed"] + x["evasion"] + x["ballCarrierVision"]))/6
-        RB_Calc = (3.75*(x["speed"] + x["evasion"] + x["strength"]) + (x["routeRunning"] + x["ballSecurity"] + x["catching"] +  x["ballCarrierVision"]) + (x["passBlocking"]+x["runBlocking"]))/8
-        WR_Calc = (3*(x["routeRunning"] + x["catching"]) + 1.25*(x["speed"]) +1.5*(x["evasion"] + x["ballCarrierVision"]))/5
-        TE_Calc = (2.75*(x["passBlocking"] + x["runBlocking"] + x["routeRunning"]) + 1.5*(x["strength"] + x["speed"]))/5
-        OL_Calc = (2.25*(x["passBlocking"]+ x["runBlocking"]) + 1.5*(x["strength"]))/3
+        RB_Calc = (3*(x["speed"] + x["evasion"] + x["strength"]) + 1.3*(x["routeRunning"] + x["ballSecurity"] + x["catching"] +  x["ballCarrierVision"]) + (x["passBlocking"]+x["runBlocking"]))/8
+        WR_Calc = (2.75*(x["routeRunning"] + x["catching"]) + 1.25*(x["speed"]) +1.5*(x["evasion"] + x["ballCarrierVision"]))/5
+        TE_Calc = (2.5*(x["passBlocking"] + x["runBlocking"] + x["routeRunning"]) + (x["strength"] + x["speed"]))/5
+        OL_Calc = (2*(x["passBlocking"]+ x["runBlocking"]) + 1.25*(x["strength"]))/3
         DL_Calc = (2*(x['blockShedding'] + x['tackling'] + x['pursuit']) + 2*(x["defensiveIq"] + x["strength"]))/5
-
+        LB_Calc = ((x['blockShedding'] + x['defensiveIq'] + x['tackling'] + x['pursuit'] + x['manCoverage'] + x['zoneCoverage']))/3
+        CB_Calc = None
+        S_Calc = None
+        K_Calc = None
 # QB
-        if(QB_Calc >= RB_Calc and QB_Calc >= WR_Calc and QB_Calc >= TE_Calc and QB_Calc >= OL_Calc and QB_Calc >= DL_Calc):
+        if(QB_Calc >= RB_Calc and QB_Calc >= WR_Calc and QB_Calc >= TE_Calc and QB_Calc >= OL_Calc and QB_Calc >= DL_Calc) and QB_Calc >= LB_Calc:
             y = "QB"
-            qb_x = qb_x +1
-
 # WR
-        elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc and WR_Calc > DL_Calc):
+        elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc and WR_Calc > DL_Calc and WR_Calc > LB_Calc):
             y = "WR"
             x["speed"] = random.randint(65,110)
-            wr_x = wr_x +1
 # RB
-        elif(RB_Calc > TE_Calc and RB_Calc > OL_Calc and RB_Calc > DL_Calc): 
+        elif(RB_Calc > TE_Calc and RB_Calc > OL_Calc and RB_Calc > DL_Calc and RB_Calc > LB_Calc): 
             y = "RB"
-            rb_x = rb_x +1
 # TE
-        elif(TE_Calc > OL_Calc and TE_Calc > DL_Calc): 
+        elif(TE_Calc > OL_Calc and TE_Calc > DL_Calc and TE_Calc > LB_Calc): 
             y= "TE"
-            te_x = te_x +1
 # OL
-        elif(OL_Calc > DL_Calc):
+        elif(OL_Calc > DL_Calc and OL_Calc > LB_Calc):
             x["manCoverage"] = random.randint(20,60)
             x["zoneCoverage"] = random.randint(20,60)
             x["blockShedding"] = random.randint(20,60)
@@ -80,11 +79,10 @@ def attr_gen_calc():
             x["accuracy"] = random.randint(20,60)
             x["kickPower"] = random.randint(20,60)
             x["puntPower"] = random.randint(20,60)
-            x["tackle"] = random.randint(20,60)
+            x["tackling"] = random.randint(20,60)
             x["speed"] = random.randint(20,60)
             y="OL"
-            ol_x = ol_x +1
-        else: 
+        elif(DL_Calc > LB_Calc): 
             x["manCoverage"] = random.randint(20,60)
             x["zoneCoverage"] = random.randint(20,60)
             x["passBlocking"] = random.randint(20,60)
@@ -93,9 +91,11 @@ def attr_gen_calc():
             x["accuracy"] = random.randint(20,60)
             x["kickPower"] = random.randint(20,60)
             x["puntPower"] = random.randint(20,60)
-            x["tackle"] = random.randint(20,60)
+            x["runBlocking"] = random.randint(20,60)
             x["speed"] = random.randint(20,60)
             y="DL"
+        else:
+            y = "LB"
             
         if(players_created == players_to_create):
             break
@@ -129,6 +129,7 @@ for i in range(players_to_create):
             "priority": random.choice(priorities)
         }
         data_list.append(json_data)
+        
 print(str(positionAttributes[2]) + " Players Succesfully Created")
         # print(f"{i} {positionAttributes[1]}")
 
