@@ -59,16 +59,29 @@ def attr_gen_calc():
 # QB
         if(QB_Calc >= RB_Calc and QB_Calc >= WR_Calc and QB_Calc >= TE_Calc and QB_Calc >= OL_Calc and QB_Calc >= DL_Calc and QB_Calc >= LB_Calc and QB_Calc  >= CB_Calc and QB_Calc >= S_Calc and QB_Calc >= K_Calc):
             y = "QB"
+            x['accuracy'] = random.randint(60,85)
+            x['armStrength'] = random.randint(60,85)
+            x['passIq'] = random.randint(60,85)
+            
+            if((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 >= (x["accuracy"] + x['passIq'] + x['armStrength']) +10):
+                archetype = 'Dual-Threat'
+            elif(x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 +10 <= (x["accuracy"] + x['passIq'] + x['armStrength']):
+                archetype = 'Gunslinger'
+            else: 
+                archetype = 'Field-General'
 # WR
         elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc and WR_Calc > DL_Calc and WR_Calc > LB_Calc and WR_Calc > CB_Calc and WR_Calc > S_Calc and WR_Calc > K_Calc):
             y = "WR"
+            archetype = 'balanced'
             x["speed"] = random.randint(65,110)
 # RB
         elif(RB_Calc > TE_Calc and RB_Calc > OL_Calc and RB_Calc > DL_Calc and RB_Calc > LB_Calc and RB_Calc > CB_Calc and RB_Calc > S_Calc and RB_Calc > K_Calc): 
             y = "RB"
+            archetype = 'balanced'
 # TE
         elif(TE_Calc > OL_Calc and TE_Calc > DL_Calc and TE_Calc > LB_Calc and TE_Calc > CB_Calc and TE_Calc > S_Calc and TE_Calc > K_Calc): 
             y= "TE"
+            archetype = 'balanced'
 # OL
         elif(OL_Calc > DL_Calc and OL_Calc > LB_Calc and OL_Calc > CB_Calc and OL_Calc > S_Calc and OL_Calc > K_Calc):
             x["manCoverage"] = random.randint(20,60)
@@ -82,6 +95,7 @@ def attr_gen_calc():
             x["tackling"] = random.randint(20,60)
             x["speed"] = random.randint(20,60)
             y="OL"
+            archetype = 'balanced'
         elif(DL_Calc > LB_Calc and DL_Calc > CB_Calc and DL_Calc > S_Calc and DL_Calc > K_Calc): 
             x["manCoverage"] = random.randint(20,60)
             x["zoneCoverage"] = random.randint(20,60)
@@ -94,14 +108,19 @@ def attr_gen_calc():
             x["runBlocking"] = random.randint(20,60)
             x["speed"] = random.randint(20,60)
             y="DL"
+            archetype = 'balanced'
         elif(LB_Calc> CB_Calc and LB_Calc > S_Calc and LB_Calc > K_Calc):
             y = "LB"
+            archetype = 'balanced'
         elif(CB_Calc > S_Calc and CB_Calc > K_Calc):
             y="CB"
+            archetype = 'balanced'
         elif(S_Calc > K_Calc):
             y= "S"
+            archetype = 'balanced'
         else:
             y="K"
+            archetype = 'balanced'
             
         if(players_created == players_to_create):
             print("Player Created")
@@ -109,7 +128,7 @@ def attr_gen_calc():
         else:        
             players_created = players_created +1
              
-    pos_and_attr = (x,y,players_created)
+    pos_and_attr = (x,y,archetype,players_created)
     return pos_and_attr
 
 def priority_avatar_gen():
@@ -144,8 +163,6 @@ def priority_avatar_gen():
     return data
 types = ["HS", "JUCO"]
 archtypes = ["a", "b"]
-avatars = ["a", "b"]
-priorities = ["a", "b"]
 
 data_list = []
 # JSON File Writing
@@ -161,14 +178,14 @@ for i in range(players_to_create):
         "firstName": names.get_first_name(gender="male"), 
         "lastName": names.get_last_name(),
         "homeZipcode": zip_code,
-        "archtype": random.choice(archtypes),
+        "archtype": positionAttributes[2],
         "avatar": avatar_priority[0],
         "attributes": positionAttributes[0],
         "priority": avatar_priority[1]
     }
     data_list.append(json_data)
         
-print(str(positionAttributes[2]) + " Players Succesfully Created")
+print(str(positionAttributes[3]) + " Players Succesfully Created")
         # print(f"{i} {positionAttributes[1]}")
 
 with open(output_file_path, "w") as output_file:
