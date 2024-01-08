@@ -53,19 +53,19 @@ def attr_gen_calc(attr):
         print(QB_Calc +" " + y)
 
 # WR
-    elif(WR_Calc>=RB_Calc and WR_Calc >= TE_Calc and WR_Calc >= OL_Calc):
+    elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc):
         y = "WR"
         x.update({"speed":90})
         print(x["speed"])
         WR_Calc = str(WR_Calc)
         print(WR_Calc + " " + y) 
 # RB
-    elif(RB_Calc >= TE_Calc and RB_Calc >= OL_Calc): 
+    elif(RB_Calc > TE_Calc and RB_Calc > OL_Calc): 
         y = "RB"
         RB_Calc = str(RB_Calc)
         print(RB_Calc + " " + y) 
 # TE
-    elif(TE_Calc >= OL_Calc): 
+    elif(TE_Calc > OL_Calc): 
         y= "TE"
         TE_Calc = str(TE_Calc)
         print(TE_Calc + " " + y)
@@ -92,15 +92,11 @@ def attr_gen_calc(attr):
     
 
 types = ["HS", "JUCO"]
-positions = ["RB", "QB", "WR", "TE", "OL","DL","K","S","CB"]
-# home_zipcodes = [1, 2]
 archtypes = ["a", "b"]
 avatars = ["a", "b"]
-# attributes = ["a", "b"]
 priorities = ["a", "b"]
 
 data_list = []
-max_length = max( len(types), len(positions), len(archtypes), len(avatars))
 attr_gen_calc(attr=0)
 for i in range(25):
         rating_gen = round(random.uniform(.5,1), 4)
