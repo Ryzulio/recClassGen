@@ -1,0 +1,3 @@
+- Add archetypes for all positions
+✅ Make weight generation more accurate per positon
+- Change certain attributes based off positon for better balancing

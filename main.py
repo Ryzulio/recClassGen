@@ -6,10 +6,11 @@ import names
 import time
 from collections import Counter
 
-# rec_year = input("Recruiting Class Year: ")
+start = time.time()
+rec_year = (input("Recruiting Class Year: "))
 print("Recommended Amount: 3000-3600")
 players_to_create = int(input("Player Amount: "))
-output_file_name = "results.json"
+output_file_name = f"{rec_year}.json"
 output_file_path = os.path.join(os.path.dirname(__file__), output_file_name)
 def attr_gen_calc():
     players_created = 0
@@ -17,9 +18,9 @@ def attr_gen_calc():
     while True:
         x = {
                 "year": 2022, 
-                "durability": random.randint(55,120),
-                "potential": random.randint(55,120),
-                "height": random.randint(63,70),
+                "durability": random.randint(55,99),
+                "potential": random.randint(55,99),
+                "height": random.randint(67,80),
                 "weight": random.randint(180,320),
                 "speed": random.randint(40,100),
                 "evasion": random.randint(40,100),
@@ -62,26 +63,36 @@ def attr_gen_calc():
             x['accuracy'] = random.randint(60,85)
             x['armStrength'] = random.randint(60,85)
             x['passIq'] = random.randint(60,85)
+            x['weight'] = random.randint(190,220)
+            x['height']= random.randint(70,78)
             
             if((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 >= (x["accuracy"] + x['passIq'] + x['armStrength']) +10):
-                archetype = 'Dual-Threat'
-            elif(x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 +10 <= (x["accuracy"] + x['passIq'] + x['armStrength']):
-                archetype = 'Gunslinger'
+                archetype = 'dual-threat'
+            elif((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 +10 <=  x['armStrength']+5):
+                archetype = 'gunslinger'
+            elif((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 +10 <= (x["accuracy"] + x['passIq'] + x['armStrength'])):
+                archetype='field-general'
             else: 
-                archetype = 'Field-General'
+                archetype='balanced'
 # WR
         elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc and WR_Calc > DL_Calc and WR_Calc > LB_Calc and WR_Calc > CB_Calc and WR_Calc > S_Calc and WR_Calc > K_Calc):
             y = "WR"
             archetype = 'balanced'
             x["speed"] = random.randint(65,110)
+            x['weight'] = random.randint(180,230)
+            x['height']= random.randint(67,76)
 # RB
         elif(RB_Calc > TE_Calc and RB_Calc > OL_Calc and RB_Calc > DL_Calc and RB_Calc > LB_Calc and RB_Calc > CB_Calc and RB_Calc > S_Calc and RB_Calc > K_Calc): 
             y = "RB"
             archetype = 'balanced'
+            x['weight'] = random.randint(180,230)
+            x['height']= random.randint(66,73)
 # TE
         elif(TE_Calc > OL_Calc and TE_Calc > DL_Calc and TE_Calc > LB_Calc and TE_Calc > CB_Calc and TE_Calc > S_Calc and TE_Calc > K_Calc): 
             y= "TE"
             archetype = 'balanced'
+            x['weight'] = random.randint(220,260)
+            x['height']= random.randint(72,77)
 # OL
         elif(OL_Calc > DL_Calc and OL_Calc > LB_Calc and OL_Calc > CB_Calc and OL_Calc > S_Calc and OL_Calc > K_Calc):
             x["manCoverage"] = random.randint(20,60)
@@ -94,6 +105,8 @@ def attr_gen_calc():
             x["puntPower"] = random.randint(20,60)
             x["tackling"] = random.randint(20,60)
             x["speed"] = random.randint(20,60)
+            x['weight'] = random.randint(270,350)
+            x['height']= random.randint(76,82)
             y="OL"
             archetype = 'balanced'
         elif(DL_Calc > LB_Calc and DL_Calc > CB_Calc and DL_Calc > S_Calc and DL_Calc > K_Calc): 
@@ -107,20 +120,30 @@ def attr_gen_calc():
             x["puntPower"] = random.randint(20,60)
             x["runBlocking"] = random.randint(20,60)
             x["speed"] = random.randint(20,60)
+            x['weight'] = random.randint(270,350)
+            x['height']= random.randint(76,82)
             y="DL"
             archetype = 'balanced'
         elif(LB_Calc> CB_Calc and LB_Calc > S_Calc and LB_Calc > K_Calc):
             y = "LB"
             archetype = 'balanced'
+            x['weight'] = random.randint(230,270)
+            x['height']= random.randint(70,75)
         elif(CB_Calc > S_Calc and CB_Calc > K_Calc):
             y="CB"
             archetype = 'balanced'
+            x['weight'] = random.randint(180,230)
+            x['height']= random.randint(69,75)
         elif(S_Calc > K_Calc):
             y= "S"
             archetype = 'balanced'
+            x['weight'] = random.randint(185,235)
+            x['height']= random.randint(70,76)
         else:
             y="K"
             archetype = 'balanced'
+            x['weight'] = random.randint(180,210)
+            x['height']= random.randint(66,73)
             
         if(players_created == players_to_create):
             print("Player Created")
@@ -165,7 +188,6 @@ types = ["HS", "JUCO"]
 archtypes = ["a", "b"]
 
 data_list = []
-# JSON File Writing
 for i in range(players_to_create):
     avatar_priority = priority_avatar_gen()
     positionAttributes = attr_gen_calc()
@@ -178,15 +200,16 @@ for i in range(players_to_create):
         "firstName": names.get_first_name(gender="male"), 
         "lastName": names.get_last_name(),
         "homeZipcode": zip_code,
-        "archtype": positionAttributes[2],
+        "archetype": positionAttributes[2],
         "avatar": avatar_priority[0],
         "attributes": positionAttributes[0],
         "priority": avatar_priority[1]
-    }
+    }           
     data_list.append(json_data)
-        
+    
+end = time.time()
 print(str(positionAttributes[3]) + " Players Succesfully Created")
-        # print(f"{i} {positionAttributes[1]}")
+print(str(end-start) + " Time Elapsed")
 
 with open(output_file_path, "w") as output_file:
         json.dump(data_list, output_file, indent=2)
