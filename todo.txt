@@ -1,3 +1,5 @@
 - Add archetypes for all positions
-✅ Make weight generation more accurate per positon
+1/8/23 ✅ Make weight generation more accurate per positon 
 - Change certain attributes based off positon for better balancing
+1/9/23 ✅ Fix rating gen for more 1 stars
+- fix rating gen for overall balancing per star rating

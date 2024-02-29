@@ -1,158 +1,377 @@
-
 import os
 import json
-import random
+import numpy as np
 import names
+import random
 import time
-from collections import Counter
 
+# numpy 
+rng = np.random.default_rng()
+
+# Other Variables 
+create_string = input("How many players do you want to create? ")
+year = input("What recruting year? ")
 start = time.time()
-rec_year = (input("Recruiting Class Year: "))
-print("Recommended Amount: 3000-3600")
-players_to_create = int(input("Player Amount: "))
-output_file_name = f"{rec_year}.json"
+output_file_name = "testing.json"
 output_file_path = os.path.join(os.path.dirname(__file__), output_file_name)
-def attr_gen_calc():
-    players_created = 0
-# Initial Randomization
-    while True:
-        x = {
-                "year": 2022, 
-                "durability": random.randint(55,99),
-                "potential": random.randint(55,99),
-                "height": random.randint(67,80),
-                "weight": random.randint(180,320),
-                "speed": random.randint(40,100),
-                "evasion": random.randint(40,100),
-                "strength": random.randint(40,100),
-                "armStrength": random.randint(40,100),
-                "accuracy": random.randint(40,100),
-                "passIq": random.randint(40,100),
-                "catching": random.randint(40,100),
-                "routeRunning": random.randint(40,100),
-                "ballSecurity": random.randint(40,100),
-                "ballCarrierVision": random.randint(40,100),
-                "runBlocking": random.randint(50,100),
-                "passBlocking": random.randint(50,100),
-                "tackling": random.randint(40,100),
-                "manCoverage": random.randint(40,100),
-                "zoneCoverage": random.randint(40,100),
-                "blockShedding": random.randint(40,100),
-                "pursuit": random.randint(40,100),
-                "defensiveIq": random.randint(40,100),
-                "kickPower": random.randint(40,100),
-                "kickAccuracy": random.randint(40,100),
-                "puntPower": random.randint(40,100),
-                "puntAccuracy": random.randint(40,100)
-            }
-        
-# Positon Calculations
-        QB_Calc = ((2.75*(x["armStrength"] + x["accuracy"] + x["passIq"])) + (x["speed"] + x["evasion"] + x["ballCarrierVision"]))/6
-        RB_Calc = (2.5*(x["speed"] + x["evasion"] + x["strength"]) + 1.5*(x["routeRunning"] + x["ballSecurity"] + x["catching"] +  x["ballCarrierVision"]) + (x["passBlocking"]+x["runBlocking"]))/8
-        WR_Calc = (2.75*(x["routeRunning"] + x["catching"]) + 1.4*(x["speed"]) +1.1*(x["evasion"] + x["ballCarrierVision"]))/5
-        TE_Calc = (2.5*(x["passBlocking"] + x["runBlocking"] + x["routeRunning"]) + (x["strength"] + x["speed"]))/5
-        OL_Calc = (2*(x["passBlocking"]+ x["runBlocking"]) + 1.25*(x["strength"]))/3
-        DL_Calc = (1.75*(x['blockShedding'] + x['tackling'] + x['pursuit']) + 2*(x["defensiveIq"] + x["strength"]))/5
-        LB_Calc = ((x['blockShedding'] + x['defensiveIq'] + x['tackling'] + x['pursuit'] + x['manCoverage'] + x['zoneCoverage']))/3.25
-        CB_Calc = (2.6*(x["manCoverage"] + x["zoneCoverage"]) + 1.25*(x['defensiveIq'] + x["tackling"]) + 1.75*(x["speed"]))/5
-        S_Calc = (3*(x['defensiveIq'] + x['tackling']) + 2.2*(x['manCoverage'] + x['zoneCoverage']) + 1.25*(x['speed'] + x['strength'] + x['evasion']))/7
-        K_Calc = ((x['kickAccuracy'] + x['kickPower'] + x['puntAccuracy'] + x['puntPower']))/2.25
-# QB
-        if(QB_Calc >= RB_Calc and QB_Calc >= WR_Calc and QB_Calc >= TE_Calc and QB_Calc >= OL_Calc and QB_Calc >= DL_Calc and QB_Calc >= LB_Calc and QB_Calc  >= CB_Calc and QB_Calc >= S_Calc and QB_Calc >= K_Calc):
-            y = "QB"
-            x['accuracy'] = random.randint(60,85)
-            x['armStrength'] = random.randint(60,85)
-            x['passIq'] = random.randint(60,85)
-            x['weight'] = random.randint(190,220)
-            x['height']= random.randint(70,78)
-            
-            if((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 >= (x["accuracy"] + x['passIq'] + x['armStrength']) +10):
-                archetype = 'dual-threat'
-            elif((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 +10 <=  x['armStrength']+5):
-                archetype = 'gunslinger'
-            elif((x["speed"] + x["evasion"] + x["ballCarrierVision"])/3 +10 <= (x["accuracy"] + x['passIq'] + x['armStrength'])):
-                archetype='field-general'
-            else: 
-                archetype='balanced'
-# WR
-        elif(WR_Calc > RB_Calc and WR_Calc > TE_Calc and WR_Calc > OL_Calc and WR_Calc > DL_Calc and WR_Calc > LB_Calc and WR_Calc > CB_Calc and WR_Calc > S_Calc and WR_Calc > K_Calc):
-            y = "WR"
-            archetype = 'balanced'
-            x["speed"] = random.randint(65,110)
-            x['weight'] = random.randint(180,230)
-            x['height']= random.randint(67,76)
-# RB
-        elif(RB_Calc > TE_Calc and RB_Calc > OL_Calc and RB_Calc > DL_Calc and RB_Calc > LB_Calc and RB_Calc > CB_Calc and RB_Calc > S_Calc and RB_Calc > K_Calc): 
-            y = "RB"
-            archetype = 'balanced'
-            x['weight'] = random.randint(180,230)
-            x['height']= random.randint(66,73)
-# TE
-        elif(TE_Calc > OL_Calc and TE_Calc > DL_Calc and TE_Calc > LB_Calc and TE_Calc > CB_Calc and TE_Calc > S_Calc and TE_Calc > K_Calc): 
-            y= "TE"
-            archetype = 'balanced'
-            x['weight'] = random.randint(220,260)
-            x['height']= random.randint(72,77)
-# OL
-        elif(OL_Calc > DL_Calc and OL_Calc > LB_Calc and OL_Calc > CB_Calc and OL_Calc > S_Calc and OL_Calc > K_Calc):
-            x["manCoverage"] = random.randint(20,60)
-            x["zoneCoverage"] = random.randint(20,60)
-            x["blockShedding"] = random.randint(20,60)
-            x["pursuit"] = random.randint(20,60)
-            x["armStrength"] = random.randint(20,60)
-            x["accuracy"] = random.randint(20,60)
-            x["kickPower"] = random.randint(20,60)
-            x["puntPower"] = random.randint(20,60)
-            x["tackling"] = random.randint(20,60)
-            x["speed"] = random.randint(20,60)
-            x['weight'] = random.randint(270,350)
-            x['height']= random.randint(76,82)
-            y="OL"
-            archetype = 'balanced'
-        elif(DL_Calc > LB_Calc and DL_Calc > CB_Calc and DL_Calc > S_Calc and DL_Calc > K_Calc): 
-            x["manCoverage"] = random.randint(20,60)
-            x["zoneCoverage"] = random.randint(20,60)
-            x["passBlocking"] = random.randint(20,60)
-            x["pursuit"] = random.randint(20,60)
-            x["armStrength"] = random.randint(20,60)
-            x["accuracy"] = random.randint(20,60)
-            x["kickPower"] = random.randint(20,60)
-            x["puntPower"] = random.randint(20,60)
-            x["runBlocking"] = random.randint(20,60)
-            x["speed"] = random.randint(20,60)
-            x['weight'] = random.randint(270,350)
-            x['height']= random.randint(76,82)
-            y="DL"
-            archetype = 'balanced'
-        elif(LB_Calc> CB_Calc and LB_Calc > S_Calc and LB_Calc > K_Calc):
-            y = "LB"
-            archetype = 'balanced'
-            x['weight'] = random.randint(230,270)
-            x['height']= random.randint(70,75)
-        elif(CB_Calc > S_Calc and CB_Calc > K_Calc):
-            y="CB"
-            archetype = 'balanced'
-            x['weight'] = random.randint(180,230)
-            x['height']= random.randint(69,75)
-        elif(S_Calc > K_Calc):
-            y= "S"
-            archetype = 'balanced'
-            x['weight'] = random.randint(185,235)
-            x['height']= random.randint(70,76)
-        else:
-            y="K"
-            archetype = 'balanced'
-            x['weight'] = random.randint(180,210)
-            x['height']= random.randint(66,73)
-            
-        if(players_created == players_to_create):
-            print("Player Created")
-            break
-        else:        
-            players_created = players_created +1
-             
-    pos_and_attr = (x,y,archetype,players_created)
-    return pos_and_attr
+types = ["HS", "JUCO"]  
+data_list = []
+
+# Get players to create + sort them into a respective position
+def init():
+
+    create = int(create_string)
+    global qbs_to_create
+    qbs_to_create = create / 20
+    global rbs_to_create
+    rbs_to_create = create / 9
+    global wrs_to_create
+    wrs_to_create = create / 6
+    global te_to_create
+    te_to_create = create / 10
+    global ol_to_create
+    ol_to_create = create / 6
+    global dl_to_create
+    dl_to_create = create / 6 
+    global lb_to_create
+    lb_to_create = create / 4
+    global db_to_create
+    db_to_create = create / 6
+    global s_to_create
+    s_to_create = create / 9
+    global k_to_create
+    k_to_create = create / 20
+    
+
+def qb_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(70,79)),
+        "weight":int(rng.integers(195,230)),
+        "speed": int(rng.integers(55,85)),
+        "evasion": int(rng.integers(60,105)),
+        "strength": int(rng.integers(55,85)),
+        "armStrength": int(rng.integers(55,105)),
+        "accuracy":int(rng.integers(55,105)),
+       "passIq": int(rng.integers(55,105)),
+        "catching":  int(rng.integers(30,75)),
+        "routeRunning":  int(rng.integers(30,75)),
+        "ballSecurity": int(rng.integers(55,85)),
+        "ballCarrierVision": int(rng.integers(55,85)),
+        "runBlocking":  int(rng.integers(30,75)),
+        "passBlocking":  int(rng.integers(30,75)),
+        "tackling":  int(rng.integers(30,75)),
+        "manCoverage":  int(rng.integers(30,75)),
+        "zoneCoverage":  int(rng.integers(30,75)),
+        "blockShedding":  int(rng.integers(30,75)),
+        "pursuit":  int(rng.integers(30,75)),
+        "defensiveIq":  int(rng.integers(30,75)),
+        "kickPower":  int(rng.integers(30,70)),
+        "kickAccuracy":  int(rng.integers(30,60)),
+        "puntPower":  int(rng.integers(30,60)),
+        "puntAccuracy":  int(rng.integers(30,60))   
+    }
+    print(str(qbs_to_create) + " QBs Generated")  
+    return x
+
+def rb_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(65,74)),
+        "weight":int(rng.integers(180,230)),
+        "speed": int(rng.integers(55,105)),
+        "evasion": int(rng.integers(55,105)),
+        "strength": int(rng.integers(55,105)),
+        "armStrength": int(rng.integers(55,70)),
+        "accuracy":int(rng.integers(55,70)),
+       "passIq": int(rng.integers(55,70)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(55,75)),
+        "ballSecurity": int(rng.integers(65,100)),
+        "ballCarrierVision": int(rng.integers(55,95)),
+        "runBlocking":  int(rng.integers(30,85)),
+        "passBlocking":  int(rng.integers(30,85)),
+        "tackling":  int(rng.integers(30,75)),
+        "manCoverage":  int(rng.integers(30,75)),
+        "zoneCoverage":  int(rng.integers(30,75)),
+        "blockShedding":  int(rng.integers(30,75)),
+        "pursuit":  int(rng.integers(30,75)),
+        "defensiveIq":  int(rng.integers(30,75)),
+        "kickPower":  int(rng.integers(30,75)),
+        "kickAccuracy":  int(rng.integers(30,75)),
+        "puntPower":  int(rng.integers(30,75)),
+        "puntAccuracy":  int(rng.integers(30,75))   
+    }
+    print(str(rbs_to_create) + " RBs Generated")
+    return x
+
+def wr_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(69,77)),
+        "weight":int(rng.integers(180,230)),
+        "speed": int(rng.integers(55,105)),
+        "evasion": int(rng.integers(55,105)),
+        "strength": int(rng.integers(55,80)),
+        "armStrength": int(rng.integers(55,70)),
+        "accuracy":int(rng.integers(55,70)),
+       "passIq": int(rng.integers(55,70)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(55,105)),
+        "ballSecurity": int(rng.integers(65,100)),
+        "ballCarrierVision": int(rng.integers(55,95)),
+        "runBlocking":  int(rng.integers(30,70)),
+        "passBlocking":  int(rng.integers(30,70)),
+        "tackling":  int(rng.integers(30,75)),
+        "manCoverage":  int(rng.integers(30,75)),
+        "zoneCoverage":  int(rng.integers(30,75)),
+        "blockShedding":  int(rng.integers(30,75)),
+        "pursuit":  int(rng.integers(30,75)),
+        "defensiveIq":  int(rng.integers(30,75)),
+        "kickPower":  int(rng.integers(30,75)),
+        "kickAccuracy":  int(rng.integers(30,75)),
+        "puntPower":  int(rng.integers(30,75)),
+        "puntAccuracy":  int(rng.integers(30,75))   
+    }
+    print(str(wrs_to_create) + " WRs Generated")
+    return x
+
+def te_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(74,78)),
+        "weight":int(rng.integers(220,260)),
+        "speed": int(rng.integers(55,75)),
+        "evasion": int(rng.integers(55,75)),
+        "strength": int(rng.integers(55,90)),
+        "armStrength": int(rng.integers(55,70)),
+        "accuracy":int(rng.integers(55,70)),
+       "passIq": int(rng.integers(55,70)),
+        "catching":  int(rng.integers(60,75)),
+        "routeRunning":  int(rng.integers(55,75)),
+        "ballSecurity": int(rng.integers(65,80)),
+        "ballCarrierVision": int(rng.integers(55,80)),
+        "runBlocking":  int(rng.integers(60,90)),
+        "passBlocking":  int(rng.integers(60,90)),
+        "tackling":  int(rng.integers(30,60)),
+        "manCoverage":  int(rng.integers(30,60)),
+        "zoneCoverage":  int(rng.integers(30,60)),
+        "blockShedding":  int(rng.integers(30,60)),
+        "pursuit":  int(rng.integers(30,60)),
+        "defensiveIq":  int(rng.integers(30,60)),
+        "kickPower":  int(rng.integers(30,60)),
+        "kickAccuracy":  int(rng.integers(30,60)),
+        "puntPower":  int(rng.integers(30,60)),
+        "puntAccuracy":  int(rng.integers(30,60))   
+    }
+    print(str(te_to_create) + " TEs Generated")
+    return x    
+
+def ol_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(71,84)),
+        "weight":int(rng.integers(250,350)),
+        "speed": int(rng.integers(30,60)),
+        "evasion": int(rng.integers(30,60)),
+        "strength": int(rng.integers(55,90)),
+        "armStrength": int(rng.integers(30,60)),
+        "accuracy":int(rng.integers(30,60)),
+       "passIq": int(rng.integers(30,60)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(55,75)),
+        "ballSecurity": int(rng.integers(30,60)),
+        "ballCarrierVision": int(rng.integers(30,50)),
+        "runBlocking":  int(rng.integers(55,90)),
+        "passBlocking":  int(rng.integers(55,90)),
+        "tackling":  int(rng.integers(30,50)),
+        "manCoverage":  int(rng.integers(30,50)),
+        "zoneCoverage":  int(rng.integers(30,50)),
+        "blockShedding":  int(rng.integers(30,50)),
+        "pursuit":  int(rng.integers(30,50)),
+        "defensiveIq":  int(rng.integers(30,50)),
+        "kickPower":  int(rng.integers(30,50)),
+        "kickAccuracy":  int(rng.integers(30,50)),
+        "puntPower":  int(rng.integers(30,50)),
+        "puntAccuracy":  int(rng.integers(30,50))   
+    }
+    print(str(ol_to_create) + " OL Generated")
+    return x
+
+def dl_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(70,82)),
+        "weight":int(rng.integers(270,380)),
+        "speed": int(rng.integers(30,70)),
+        "evasion": int(rng.integers(30,70)),
+        "strength": int(rng.integers(50,85)),
+        "armStrength": int(rng.integers(30,40)),
+        "accuracy":int(rng.integers(30,40)),
+       "passIq": int(rng.integers(30,40)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(30,60)),
+        "ballSecurity": int(rng.integers(30,60)),
+        "ballCarrierVision": int(rng.integers(30,60)),
+        "runBlocking":  int(rng.integers(30,60)),
+        "passBlocking":  int(rng.integers(30,60)),
+        "tackling":  int(rng.integers(45,80)),
+        "manCoverage":  int(rng.integers(30,70)),
+        "zoneCoverage":  int(rng.integers(30,70)),
+        "blockShedding":  int(rng.integers(55,85)),
+        "pursuit":  int(rng.integers(50,88)),
+        "defensiveIq":  int(rng.integers(50,85)),
+        "kickPower":  int(rng.integers(30,60)),
+        "kickAccuracy":  int(rng.integers(30,60)),
+        "puntPower":  int(rng.integers(30,60)),
+        "puntAccuracy":  int(rng.integers(30,60))   
+    }
+    print(str(dl_to_create) + " DL Generated")
+    return x
+
+def lb__creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(70,77)),
+        "weight":int(rng.integers(200,260)),
+        "speed": int(rng.integers(50,85)),
+        "evasion": int(rng.integers(40,70)),
+        "strength": int(rng.integers(50,85)),
+        "armStrength": int(rng.integers(30,40)),
+        "accuracy":int(rng.integers(30,40)),
+       "passIq": int(rng.integers(30,40)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(30,50)),
+        "ballSecurity": int(rng.integers(30,50)),
+        "ballCarrierVision": int(rng.integers(30,50)),
+        "runBlocking":  int(rng.integers(30,50)),
+        "passBlocking":  int(rng.integers(30,50)),
+        "tackling":  int(rng.integers(45,80)),
+        "manCoverage":  int(rng.integers(40,75)),
+        "zoneCoverage":  int(rng.integers(40,75)),
+        "blockShedding":  int(rng.integers(55,85)),
+        "pursuit":  int(rng.integers(50,88)),
+        "defensiveIq":  int(rng.integers(50,85)),
+        "kickPower":  int(rng.integers(30,60)),
+        "kickAccuracy":  int(rng.integers(30,60)),
+        "puntPower":  int(rng.integers(30,60)),
+        "puntAccuracy":  int(rng.integers(30,60))   
+    }
+    print(str(lb_to_create) + " LBs Generated")
+    return x
+
+def db_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(68,75)),
+        "weight":int(rng.integers(180,220)),
+        "speed": int(rng.integers(65,85)),
+        "evasion": int(rng.integers(40,70)),
+        "strength": int(rng.integers(50,85)),
+        "armStrength": int(rng.integers(30,40)),
+        "accuracy":int(rng.integers(30,40)),
+       "passIq": int(rng.integers(30,40)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(30,50)),
+        "ballSecurity": int(rng.integers(30,50)),
+        "ballCarrierVision": int(rng.integers(30,50)),
+        "runBlocking":  int(rng.integers(30,50)),
+        "passBlocking":  int(rng.integers(30,50)),
+        "tackling":  int(rng.integers(45,65)),
+        "manCoverage":  int(rng.integers(55,90)),
+        "zoneCoverage":  int(rng.integers(55,90)),
+        "blockShedding":  int(rng.integers(55,70)),
+        "pursuit":  int(rng.integers(50,75)),
+        "defensiveIq":  int(rng.integers(50,85)),
+        "kickPower":  int(rng.integers(30,60)),
+        "kickAccuracy":  int(rng.integers(30,60)),
+        "puntPower":  int(rng.integers(30,60)),
+        "puntAccuracy":  int(rng.integers(30,60))   
+    }
+    print(str(db_to_create) + " CBs Generated")
+    return x
+
+def s_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(70,77)),
+        "weight":int(rng.integers(200,240)),
+        "speed": int(rng.integers(60,85)),
+        "evasion": int(rng.integers(50,70)),
+        "strength": int(rng.integers(50,85)),
+        "armStrength": int(rng.integers(30,40)),
+        "accuracy":int(rng.integers(30,40)),
+       "passIq": int(rng.integers(30,40)),
+        "catching":  int(rng.integers(55,80)),
+        "routeRunning":  int(rng.integers(30,50)),
+        "ballSecurity": int(rng.integers(30,50)),
+        "ballCarrierVision": int(rng.integers(30,50)),
+        "runBlocking":  int(rng.integers(30,50)),
+        "passBlocking":  int(rng.integers(30,50)),
+        "tackling":  int(rng.integers(55,80)),
+        "manCoverage":  int(rng.integers(40,80)),
+        "zoneCoverage":  int(rng.integers(40,80)),
+        "blockShedding":  int(rng.integers(55,80)),
+        "pursuit":  int(rng.integers(55,88)),
+        "defensiveIq":  int(rng.integers(55,85)),
+        "kickPower":  int(rng.integers(30,60)),
+        "kickAccuracy":  int(rng.integers(30,60)),
+        "puntPower":  int(rng.integers(30,60)),
+        "puntAccuracy":  int(rng.integers(30,60))   
+    }
+    print(str(s_to_create) + " S Generated")
+    return x
+
+def k_creator():
+    x = {
+         "year": year, 
+        "durability": int(rng.integers(55,99)),
+        "potential":int(rng.integers(55,99)),
+        "height": int(rng.integers(68,75)),
+        "weight":int(rng.integers(180,205)),
+        "speed": int(rng.integers(50,60)),
+        "evasion": int(rng.integers(40,60)),
+        "strength": int(rng.integers(50,60)),
+        "armStrength": int(rng.integers(30,40)),
+        "accuracy":int(rng.integers(30,40)),
+       "passIq": int(rng.integers(30,40)),
+        "catching":  int(rng.integers(40,55)),
+        "routeRunning":  int(rng.integers(30,50)),
+        "ballSecurity": int(rng.integers(30,50)),
+        "ballCarrierVision": int(rng.integers(30,50)),
+        "runBlocking":  int(rng.integers(30,50)),
+        "passBlocking":  int(rng.integers(30,50)),
+        "tackling":  int(rng.integers(45,50)),
+        "manCoverage":  int(rng.integers(40,50)),
+        "zoneCoverage":  int(rng.integers(40,50)),
+        "blockShedding":  int(rng.integers(40,50)),
+        "pursuit":  int(rng.integers(30,50)),
+        "defensiveIq":  int(rng.integers(40,50)),
+        "kickPower":  int(rng.integers(55,85)),
+        "kickAccuracy":  int(rng.integers(55,90)),
+        "puntPower":  int(rng.integers(55,85)),
+        "puntAccuracy":  int(rng.integers(55,90))   
+    }
+    print(str(k_to_create) + " Ks Generated")
+    return x
 
 def priority_avatar_gen():
     priority = {
@@ -165,13 +384,15 @@ def priority_avatar_gen():
         "academics": random.randint(0,10),
         "nil": random.randint(0,10)
     }
+    
     skinColor_list = ["Pale", "Light", "Tanned", "Brown", "Dark brown", "Black"]
     hairColor_list = ["Black", "Dark brown", "Brown", "Auburn", "Blonde", "Golden blonde", "Platinum", "Red", "Grey"]
     hair_list = ["Bald", "Balding", "Buzz cut", "Buzz cut indent", "Short flat", "Short round", "Short curly", "Short wavy", "Frizzle", "Mullet", "Short dreads", "Long dreads", "Very long dreads", "Afro", "Big and wavy", "Bob #1", "Bob #2", "Bun", "Curly", "Wavy", "Shoulder length", "Long #1", "Long #2", "Long #3"]
-    facialHair_list = ["None", "Light beard", "Medium beard", "Majestic beard", "Moustache", "Fancy moustache"]
+    facialHair_list = [" int(rng.integers(30,75))", "Light beard", "Medium beard", "Majestic beard", "Moustache", "Fancy moustache"]
     eye_list = ["default", "Happy", "Side", "Wide-eyed"]
     eyebrow_list = ["Defaul", "Default (natural)", "Angry", "Angry (natural)", "Excited", "Excited (natral)", "Bushy", "Unibrow"]
     mouth_list = ["Happy", "Serious", "Smile", "Twinkle"]
+    
     avatar = {
         "skinColor": random.choice(skinColor_list),
         "hairColor": random.choice(hairColor_list),
@@ -184,33 +405,61 @@ def priority_avatar_gen():
     
     data = (avatar, priority)
     return data
-types = ["HS", "JUCO"]
-archtypes = ["a", "b"]
 
-data_list = []
-for i in range(players_to_create):
-    avatar_priority = priority_avatar_gen()
-    positionAttributes = attr_gen_calc()
-    rating_gen = round(random.uniform(.5,1), 4)
-    zip_code = ''.join(str(random.randint(0, 9)) for _ in range(5))
-    json_data = {
-        "rating": rating_gen,
-        "type": random.choice(types),
-        "position": positionAttributes[1],
-        "firstName": names.get_first_name(gender="male"), 
-        "lastName": names.get_last_name(),
-        "homeZipcode": zip_code,
-        "archetype": positionAttributes[2],
-        "avatar": avatar_priority[0],
-        "attributes": positionAttributes[0],
-        "priority": avatar_priority[1]
-    }           
-    data_list.append(json_data)
-    
-end = time.time()
-print(str(positionAttributes[3]) + " Players Succesfully Created")
-print(str(end-start) + " Time Elapsed")
+def loop(positionAttributes, position, position_to_create):
+    amount_in_position = int(position_to_create)
+    for i in range(amount_in_position):
+        avatar_priority = priority_avatar_gen()
+        zip_code = ''.join(str(rng.integers(low = 0, high=9)) for _ in range(5))
+        rating = rng.random()
+        json_data = {
+            "rating": rating,
+            "type": random.choice(types),
+            "position": position,
+            "firstName": names.get_first_name(gender="male"), 
+            "lastName": names.get_last_name(),
+            "homeZipcode": zip_code,
+            "archetype":  "N/A",
+            "avatar": avatar_priority[0],
+            "attributes": positionAttributes,
+            "priority": avatar_priority[1]
+        }           
+        data_list.append(json_data)
 
+# Function Calls
+init()
+# Position Attributes Variables
+qb = qb_creator()
+rb = rb_creator()
+wr = wr_creator()
+te = te_creator()
+ol = ol_creator()
+dl = dl_creator()
+lb = lb__creator()
+db = db_creator()
+s = s_creator()
+k = k_creator()
+
+# Generation Loops
+
+try: 
+    loop(qb, "QB", qbs_to_create)
+    loop(rb, "RB", rbs_to_create)
+    loop(wr, "WR", wrs_to_create)
+    loop(te, "TE", te_to_create)
+    loop(ol, "OL", ol_to_create)
+    loop(dl, "DL", dl_to_create)
+    loop(lb, "LB", lb_to_create)
+    loop(db, "CB", db_to_create)
+    loop(s, "S", s_to_create)
+    loop(k, "K", k_to_create) 
+except Exception as e:
+    print("Generation Failed: " + e)
+finally: 
+    end = time.time()
+    print(str(end-start) + " Time Elapsed")
+    print("All players succesfully generated.")
+
+# Creating JSON File
 with open(output_file_path, "w") as output_file:
         json.dump(data_list, output_file, indent=2)
-
